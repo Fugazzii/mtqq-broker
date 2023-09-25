@@ -1,4 +1,5 @@
 use std::collections::VecDeque;
+use crate::traits::topic::BrokerTopic;
 
 #[derive(Debug)]
 pub struct Topic {
@@ -6,16 +7,18 @@ pub struct Topic {
 }
 
 impl Topic {
-
     pub fn new() -> Self {
         Topic { queue: VecDeque::new() }
     }
+}
 
-    pub fn publish(&mut self, message: &str) {
+impl BrokerTopic for Topic {
+
+    fn publish(&mut self, message: &str) {
         self.queue.push_back(message.into());
     }
 
-    pub fn consume(&mut self) -> Option<String> {
+    fn consume(&mut self) -> Option<String> {
         if let Some(message) = self.queue.pop_back() {
             Some(message)
         } else {
@@ -23,7 +26,4 @@ impl Topic {
         }
     }
 
-    pub fn clear(&mut self) {
-        self.queue.clear();
-    }
 }
