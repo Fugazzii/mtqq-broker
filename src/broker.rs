@@ -88,14 +88,16 @@ impl PublishTopic for Broker {
      * `message` - The message to publish.
      */
     async fn publish(&mut self, topic_name: &str, message: &str) {
-        let topic = self.topics.get_mut(topic_name);
-
-        if let Some(topic) = topic {
+        if !self.topics.contains_key(topic_name) {
+            println!("Could not find topic {}\n Creating one...", topic_name);
+            self.add_topic(topic_name);
+        }
+    
+        if let Some(topic) = self.topics.get_mut(topic_name) {
             topic.publish(topic_name, message).await;
-        } else {
-            eprintln!("Could not find topic: {}", topic_name);
         }
     }
+    
 
 }
 

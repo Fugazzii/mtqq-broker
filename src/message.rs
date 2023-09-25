@@ -38,8 +38,8 @@ impl Message {
         });
 
         buffer.put(self.topic.as_bytes());
-
         if let Some(msg) = &self.message {
+            buffer.put(" ".as_bytes());
             buffer.put(msg.as_bytes());
         }
 
