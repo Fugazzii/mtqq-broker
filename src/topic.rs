@@ -1,5 +1,7 @@
 use std::collections::VecDeque;
-use crate::traits::topic::BrokerTopic;
+use async_trait::async_trait;
+
+use crate::traits::topic::{PublishTopic, ConsumeTopic};
 
 #[derive(Debug)]
 pub struct Topic {
@@ -13,16 +15,19 @@ impl Topic {
     }
 }
 
-impl BrokerTopic for Topic {
-
-    fn publish(&mut self, name: &str, message: &str) {
+#[async_trait]
+impl PublishTopic for Topic {
+    async fn publish(&mut self, name: &str, message: &str) {
 
         if name.to_string() != self.name { panic!("Invalid name") }
 
         self.queue.push_back(message.into());
     }
+}
 
-    fn consume(&mut self, name: &str) -> Option<String> {
+#[async_trait]
+impl ConsumeTopic for Topic {
+    async fn consume(&mut self, name: &str) -> Option<String> {
 
         if name.to_string() != self.name { panic!("Invalid name") }
 
@@ -32,5 +37,4 @@ impl BrokerTopic for Topic {
             None
         }
     }
-
 }
