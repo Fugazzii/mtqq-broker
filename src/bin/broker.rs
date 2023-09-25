@@ -22,7 +22,7 @@ pub async fn main() {
         /* Convert buffer to string */
         let message = String::from_utf8_lossy(&buffer);
 
-        println!("{:?}", message);
+        println!("{}", message);
     }
     
 }
