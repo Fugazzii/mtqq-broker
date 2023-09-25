@@ -21,7 +21,7 @@ impl Consumer {
 
 #[async_trait]
 impl ConsumeTopic for Consumer {
-    async fn consume(&mut self, topic_name: &str) -> Option<String> {
-        Some(String::new())
+    async fn consume(&mut self, _topic_name: &str) -> Option<String> {
+        todo!()
     }
 }
