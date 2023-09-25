@@ -1,8 +1,9 @@
 use std::collections::HashMap;
 
+use async_trait::async_trait;
 use tokio::net::{TcpListener, TcpStream};
 
-use crate::{topic::Topic, traits::topic::BrokerTopic};
+use crate::{topic::Topic, traits::topic::{PublishTopic, ConsumeTopic}};
 
 
 /**
@@ -78,23 +79,28 @@ impl Broker {
 
 }
 
-impl BrokerTopic for Broker {
+#[async_trait]
+impl PublishTopic for Broker {
     /**
      * Publish a message to a specified topic.
      # Arguments
      * `topic_name` - The name of the topic to publish to.
      * `message` - The message to publish.
      */
-    fn publish(&mut self, topic_name: &str, message: &str) {
+    async fn publish(&mut self, topic_name: &str, message: &str) {
         let topic = self.topics.get_mut(topic_name);
 
         if let Some(topic) = topic {
-            topic.publish(topic_name, message);
+            topic.publish(topic_name, message).await;
         } else {
             eprintln!("Could not find topic: {}", topic_name);
         }
     }
 
+}
+
+#[async_trait]
+impl ConsumeTopic for Broker {
     /**
      * Consume a message from a specified topic.
      # Arguments
@@ -102,17 +108,16 @@ impl BrokerTopic for Broker {
      # Returns
      * An `Option` containing the consumed message, or `None` if the topic is not found or empty.
      */
-    fn consume(&mut self, topic_name: &str) -> Option<String> {
+    async fn consume(&mut self, topic_name: &str) -> Option<String> {
         let topic = self.topics.get_mut(topic_name);
 
         if let Some(topic) = topic {
             let message = topic.consume(topic_name);
 
-            message
+            message.await
         } else {
             eprintln!("Could not find topic: {}", topic_name);
             None
         }
     }
-
 }
