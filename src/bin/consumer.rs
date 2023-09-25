@@ -1,6 +1,6 @@
 use mqtt_broker::{consumer::Consumer, utils::handle_args, traits::topic::ConsumeTopic};
 
-const CONSUMER_ARGS_LEN: u8 = 2; 
+const CONSUMER_ARGS_LEN: u8 = 2;
 
 #[tokio::main]
 pub async fn main() {

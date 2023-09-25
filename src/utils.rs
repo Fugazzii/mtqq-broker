@@ -36,9 +36,9 @@ pub fn buffer_to_array(buf: &mut BytesMut) -> Vec<String> {
 #[allow(unused)]
 pub fn handle_args(args: &Vec<String>, args_len: u8) -> Vec<String> {
     match args.len() {
+        args_len => args[1..args_len].to_vec(),
         1 => panic!("Invalid args: Missing topic and message"),
         2 => panic!("Invalid args: Missing message"),
-        args_len => args[1..3].to_vec(),
         _ => panic!("Invalid args")
     }
 }
