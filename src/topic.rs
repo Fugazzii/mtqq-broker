@@ -6,7 +6,7 @@ pub struct Topic {
 
 impl Topic {
 
-    pub fn new(name: &str) -> Self {
+    pub fn new() -> Self {
         Topic { queue: VecDeque::new() }
     }
 
