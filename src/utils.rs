@@ -11,27 +11,24 @@ pub fn buffer_to_array(buf: &mut BytesMut) -> Vec<String> {
 
     for i in 0..length {
         match buf.get_u8() {
-            /*
-             * If received buffer is space, then add this is end of the word
-             * We need to add that word into vector
-             * ----------
-             * Otherwise, we collect word
-            */  
             b' ' => {
-                vec.push(word);
-                word = "".to_string();
+                if !word.is_empty() {
+                    vec.push(word.clone());
+                }
+                word.clear();
             },
+            0 => {},
             other => {
                 word.push(other as char);
-                let new = word.clone();
-                if i == length - 1 {
-                    vec.push(new);
+                if i == length - 1 && !word.is_empty() {
+                    vec.push(word.clone());
                 }
             }
         }
     }
     vec
 }
+
 
 #[allow(unused)]
 pub fn handle_args(args: &Vec<String>, args_len: u8) -> Vec<String> {

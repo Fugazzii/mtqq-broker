@@ -98,7 +98,6 @@ impl PublishTopic for Broker {
         }
     }
     
-
 }
 
 #[async_trait]
@@ -111,6 +110,10 @@ impl ConsumeTopic for Broker {
      * An `Option` containing the consumed message, or `None` if the topic is not found or empty.
      */
     async fn consume(&mut self, topic_name: &str) -> Option<String> {
+
+        let topic_name = topic_name.replace('\u{1}', "");
+        let topic_name = topic_name.as_str();
+
         let topic = self.topics.get_mut(topic_name);
 
         if let Some(topic) = topic {
@@ -118,7 +121,7 @@ impl ConsumeTopic for Broker {
 
             message.await
         } else {
-            eprintln!("Could not find topic: {}", topic_name);
+            eprintln!("Could not find topic: {:?}", topic_name);
             None
         }
     }

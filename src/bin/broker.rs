@@ -38,6 +38,7 @@ pub async fn main() {
             Action::Consume => {
                 let _ = stream.write_all(b"c ");
                 let topic_name = &arguments_vec[0];
+
                 let _ = broker
                     .consume(topic_name.as_str())
                     .await;
@@ -55,13 +56,7 @@ pub async fn main() {
             }
         }
 
-        println!("{:?}", arguments_vec);
-
-        // match std::str::from_utf8(&mut buffer) {
-        //     Ok(resp) => println!("{}", resp),
-        //     Err(err) => eprintln!("{:?}", err)
-        // }
-        
+        // println!("{:?}", arguments_vec);
     }
     
 }
