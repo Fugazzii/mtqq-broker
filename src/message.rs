@@ -2,6 +2,7 @@ use bytes::{BytesMut, BufMut};
 
 use crate::action::Action;
 
+#[derive(Debug)]
 pub struct Message {
     action: Action,
     topic: String,
