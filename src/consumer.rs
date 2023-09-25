@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use async_trait::async_trait;
-use tokio::net::TcpStream;
-use crate::{topic::Topic, traits::topic::ConsumeTopic};
+use tokio::{net::TcpStream, io::AsyncWriteExt};
+use crate::{topic::Topic, traits::topic::ConsumeTopic, message::Message, action::Action};
 
 #[allow(dead_code)]
 pub struct Consumer {
@@ -21,7 +21,18 @@ impl Consumer {
 
 #[async_trait]
 impl ConsumeTopic for Consumer {
-    async fn consume(&mut self, _topic_name: &str) -> Option<String> {
-        todo!()
+    async fn consume(&mut self, topic_name: &str) -> Option<String> {
+        let message = Message::new(Action::Consume, topic_name, None);
+    
+        let buffer = message.to_buffer();
+
+        let _ = self.socket
+            .write_all(&buffer)
+            .await
+            .expect("Failed to consume");
+
+        println!("Consumed");
+
+        Some("".to_string())
     }
 }

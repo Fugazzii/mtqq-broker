@@ -20,15 +20,15 @@ impl Producer {
 #[async_trait]
 impl PublishTopic for Producer {
     async fn publish(&mut self, topic_name: &str, msg: &str) {
-        let message: Message = Message::new(Action::Publish, topic_name, msg);
+        let message: Message = Message::new(Action::Publish, topic_name, Some(msg));
     
         let buffer = message.to_buffer();
 
         let _ = self.socket
             .write_all(&buffer)
             .await
-            .expect("Failed to sent message");
+            .expect("Failed to publish");
 
-        println!("Sent");
+        println!("Published");
     }
 }

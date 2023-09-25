@@ -6,13 +6,27 @@ use crate::action::Action;
 pub struct Message {
     action: Action,
     topic: String,
-    message: String
+    message: Option<String>
 }
 
 impl Message {
 
-    pub fn new(action: Action, topic: &str, message: &str) -> Self {
-        Message { action, topic: topic.to_string(), message: message.to_string() }
+    pub fn new(action: Action, topic: &str, message: Option<&str>) -> Self {
+
+        let message = {
+            if let Some(msg) = message {
+                Some(msg.to_string())
+            } else {
+                None
+            }
+        };
+
+        
+        Message { 
+            action,
+            topic: topic.to_string(),
+            message
+        }
     }
 
     pub fn to_buffer(&self) -> BytesMut {
@@ -24,7 +38,10 @@ impl Message {
         });
 
         buffer.put(self.topic.as_bytes());
-        buffer.put(self.message.as_bytes());
+
+        if let Some(msg) = &self.message {
+            buffer.put(msg.as_bytes());
+        }
 
         buffer
     }
