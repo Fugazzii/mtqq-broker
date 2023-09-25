@@ -1,12 +1,13 @@
 use bytes::BytesMut;
 use tokio::net::{TcpListener, TcpStream};
 
-struct Server {
+struct Broker {
     listener: TcpListener
 }
 
-impl Server {
+impl Broker {
     
+    /** Create TCP socket for listening incoming streams */
     pub async fn listen((host, port): (&str, u32)) -> Self {
         let addr = format!("{}:{}", host, port);
 
@@ -14,9 +15,10 @@ impl Server {
             .await
             .expect("Failed to listen");
 
-        Server { listener }
+        Broker { listener }
     }
 
+    /** Accept incoming stream */
     pub async fn accept(&self) -> TcpStream {
         let (stream, _) = self.listener
             .accept()
@@ -25,25 +27,31 @@ impl Server {
 
         stream
     }
+
 }
 
-
-
-
+/** Entry function for broker */
 #[tokio::main]
 pub async fn main() {
-    let server = Server::listen(("127.0.0.1", 3000)).await;
+    let broker = Broker::listen(("127.0.0.1", 3000)).await;
 
     loop {
-        let stream = server
+
+        /* Stop the thread until stream comes */
+        let stream = broker
             .accept()
             .await;
 
+        /* Create empty space for saving buffer */
         let mut buffer = BytesMut::with_capacity(1024);
 
+        /* Write incoming stream into empty buffer space */
         let _ = stream.try_read_buf(&mut buffer);
 
-        println!("{:?}", buffer);
+        /* Convert buffer to string */
+        let message = String::from_utf8_lossy(&buffer);
+
+        println!("{:?}", message);
     }
     
 }
