@@ -1,10 +1,12 @@
-use mqtt_broker::broker::Broker;
+use mqtt_broker::{broker::Broker, utils::buffer_to_array};
 use bytes::BytesMut;
 
 /** Entry function for broker */
 #[tokio::main]
 pub async fn main() {
-    let broker = Broker::listen(("127.0.0.1", 3000)).await;
+    let mut broker = Broker::listen(("127.0.0.1", 3000)).await;
+
+    broker.add_topic("tanks");
 
     loop {
 
@@ -17,12 +19,14 @@ pub async fn main() {
         let mut buffer = BytesMut::with_capacity(1024);
 
         /* Write incoming stream into empty buffer space */
-        let _ = stream.try_read_buf(&mut buffer);
+        if let Err(error) = stream.try_read_buf(&mut buffer) {
+            eprintln!("Error: {}", error);
+            continue;
+        }
 
-        /* Convert buffer to string */
-        let message = String::from_utf8_lossy(&buffer);
+        let a = buffer_to_array(&mut buffer);
 
-        println!("{}", message);
+        println!("Received: {:?}", a);  
     }
     
 }
