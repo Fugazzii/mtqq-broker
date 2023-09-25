@@ -46,7 +46,7 @@ pub async fn main() {
             Action::Publish => {
                 let _ = stream.write_all(b"p ");
                 let topic_name = &arguments_vec[0];
-                let message = &arguments_vec[0];
+                let message = &arguments_vec[1];
                 let _ = broker
                     .publish(
                         topic_name.as_str(),

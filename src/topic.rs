@@ -21,7 +21,9 @@ impl PublishTopic for Topic {
 
         if name.to_string() != self.name { panic!("Invalid name") }
 
-        self.queue.push_back(message.into());
+        self.queue.push_back(message.to_string());
+
+        println!("{:?}", self.queue);
     }
 }
 
