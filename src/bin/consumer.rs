@@ -10,7 +10,9 @@ pub async fn main() {
 
     let mut socket = Consumer::connect("127.0.0.1:3000").await;
 
-    socket.consume(&parsed_args[0]).await;
+    let topic = &parsed_args[0];
+
+    socket.consume(topic).await;
 
     println!("Consuming...");
 }

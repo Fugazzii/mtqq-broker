@@ -10,7 +10,10 @@ pub async fn main() {
 
     let mut socket = Producer::connect("127.0.0.1:3000").await;
 
-    socket.publish(parsed_args[0].as_str(), parsed_args[1].as_str()).await;
+    let topic = parsed_args[0].as_str();
+    let message = parsed_args[1].as_str();
+
+    socket.publish(topic, message).await;
 
     println!("Publishing...");
 }
