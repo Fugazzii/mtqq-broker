@@ -1,4 +1,4 @@
 pub trait BrokerTopic {
-    fn publish(&mut self, message: &str);
-    fn consume(&mut self) -> Option<String>;
+    fn publish(&mut self, topic_name: &str, message: &str);
+    fn consume(&mut self, topic_name: &str) -> Option<String>;
 }

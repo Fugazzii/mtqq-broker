@@ -58,8 +58,8 @@ impl Broker {
      * `topic_name` - The name of the topic to add.
      */
     pub fn add_topic(&mut self, topic_name: &str) {
-        let name = topic_name.into();
-        let new_topic = Topic::new();
+        let name = topic_name.to_string();
+        let new_topic = Topic::new(topic_name);
         self.topics.insert(name, new_topic);
     }
 
@@ -76,17 +76,20 @@ impl Broker {
         }
     }
 
+}
+
+impl BrokerTopic for Broker {
     /**
      * Publish a message to a specified topic.
      # Arguments
      * `topic_name` - The name of the topic to publish to.
      * `message` - The message to publish.
      */
-    pub fn publish(&mut self, topic_name: &str, message: &str) {
+    fn publish(&mut self, topic_name: &str, message: &str) {
         let topic = self.topics.get_mut(topic_name);
 
         if let Some(topic) = topic {
-            topic.publish(message);
+            topic.publish(topic_name, message);
         } else {
             eprintln!("Could not find topic: {}", topic_name);
         }
@@ -99,11 +102,13 @@ impl Broker {
      # Returns
      * An `Option` containing the consumed message, or `None` if the topic is not found or empty.
      */
-    pub fn consume(&mut self, topic_name: &str) -> Option<String> {
+    fn consume(&mut self, topic_name: &str) -> Option<String> {
         let topic = self.topics.get_mut(topic_name);
 
         if let Some(topic) = topic {
-            topic.consume()
+            let message = topic.consume(topic_name);
+
+            message
         } else {
             eprintln!("Could not find topic: {}", topic_name);
             None
