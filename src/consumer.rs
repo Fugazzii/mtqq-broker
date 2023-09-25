@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 use tokio::{net::TcpStream, io::AsyncWriteExt};
-use crate::{topic::Topic, traits::topic::BrokerTopic, message::Message, action::Action};
+use crate::{topic::Topic, message::Message, action::Action};
 
 #[allow(dead_code)]
 pub struct Consumer {
@@ -23,7 +23,10 @@ impl Consumer {
     
         let buffer = message.to_buffer();
 
-        let _ = self.socket.write_all(&buffer).await.expect("Failed to sent message");
+        let _ = self.socket
+            .write_all(&buffer)
+            .await
+            .expect("Failed to sent message");
 
         println!("Sent");
     }

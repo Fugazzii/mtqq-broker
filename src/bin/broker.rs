@@ -1,5 +1,6 @@
 use mqtt_broker::{broker::Broker, utils::buffer_to_array};
 use bytes::BytesMut;
+use tokio::io::AsyncReadExt;
 
 /** Entry function for broker */
 #[tokio::main]
@@ -11,7 +12,7 @@ pub async fn main() {
     loop {
 
         /* Stop the thread until stream comes */
-        let stream = broker
+        let mut stream = broker
             .accept()
             .await;
 
@@ -19,10 +20,7 @@ pub async fn main() {
         let mut buffer = BytesMut::with_capacity(1024);
 
         /* Write incoming stream into empty buffer space */
-        if let Err(error) = stream.try_read_buf(&mut buffer) {
-            eprintln!("Error: {}", error);
-            continue;
-        }
+        let _ = stream.read_buf(&mut buffer).await.expect("Failed");
 
         let a = buffer_to_array(&mut buffer);
 
