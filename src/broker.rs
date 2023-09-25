@@ -117,9 +117,9 @@ impl ConsumeTopic for Broker {
         let topic = self.topics.get_mut(topic_name);
 
         if let Some(topic) = topic {
-            let message = topic.consume(topic_name);
+            let message = topic.consume(topic_name).await;
 
-            message.await
+            message
         } else {
             eprintln!("Could not find topic: {:?}", topic_name);
             None

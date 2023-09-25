@@ -39,9 +39,15 @@ pub async fn main() {
                 let _ = stream.write_all(b"c ");
                 let topic_name = &arguments_vec[0];
 
-                let _ = broker
+                let response = broker
                     .consume(topic_name.as_str())
                     .await;
+
+                if let Some(res) = response {
+                    if let Err(err) = stream.write_all(&res.as_str().as_bytes()).await {
+                        eprintln!("Failed to return response: {}", err);
+                    }
+                }      
             },
             Action::Publish => {
                 let _ = stream.write_all(b"p ");
@@ -55,8 +61,6 @@ pub async fn main() {
                     .await;
             }
         }
-
-        // println!("{:?}", arguments_vec);
     }
     
 }

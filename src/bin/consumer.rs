@@ -13,5 +13,7 @@ pub async fn main() {
     println!("Consuming...");    
 
     let topic = &parsed_args[0];
-    socket.consume(topic).await;
+    let response = socket.consume(topic).await;
+
+    println!("Consumed message: {}", response.expect("No message"));
 }

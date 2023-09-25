@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 use async_trait::async_trait;
-use tokio::{net::TcpStream, io::AsyncWriteExt};
+use bytes::BytesMut;
+use tokio::{net::TcpStream, io::{AsyncWriteExt, AsyncReadExt}};
 use crate::{topic::Topic, traits::topic::ConsumeTopic, message::Message, action::Action};
 
 #[allow(dead_code)]
@@ -31,8 +32,15 @@ impl ConsumeTopic for Consumer {
             .await
             .expect("Failed to consume");
 
-        println!("Consumed");
+        let mut res_buf = BytesMut::with_capacity(1024);
 
-        Some("".to_string())
+        let _ = self.socket.read_buf(&mut res_buf).await.expect("Failed to get response");
+
+        if let std::result::Result::Ok(res) = std::str::from_utf8(&mut res_buf) {
+            Some(res.to_string())
+        } else {
+            Some("".to_string())
+        }
+        
     }
 }
